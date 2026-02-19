@@ -14,7 +14,7 @@
         "Folder structure: src/{types,components,hooks,services,screens}",
         "Basic App.tsx renders"
       ],
-      "estimatedIterations": 5
+      "estimatedIterations": 25
     },
     {
       "id": "types",
