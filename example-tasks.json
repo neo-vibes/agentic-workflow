@@ -1,0 +1,107 @@
+{
+  "project": "react-native-todo",
+  "spec": "spec.md",
+  "tasks": [
+    {
+      "id": "setup",
+      "name": "Project Setup",
+      "deps": [],
+      "prompt": "Initialize React Native project with TypeScript, ESLint, and Vitest. Set up folder structure per AGENTS.md.",
+      "acceptance": [
+        "React Native project runs (pnpm start works)",
+        "TypeScript strict mode enabled",
+        "ESLint configured and passing",
+        "Folder structure: src/{types,components,hooks,services,screens}",
+        "Basic App.tsx renders"
+      ],
+      "estimatedIterations": 5
+    },
+    {
+      "id": "types",
+      "name": "Core Types",
+      "deps": ["setup"],
+      "prompt": "Define TypeScript types for Todo items and app state.",
+      "acceptance": [
+        "Todo type: { id, title, completed, createdAt }",
+        "TodoList type: Todo[]",
+        "Filter type: 'all' | 'active' | 'completed'",
+        "Exported from src/types/index.ts"
+      ],
+      "estimatedIterations": 3
+    },
+    {
+      "id": "storage",
+      "name": "Storage Service",
+      "deps": ["types"],
+      "prompt": "Implement async storage service for persisting todos locally.",
+      "acceptance": [
+        "saveTodos(todos: Todo[]): Promise<void>",
+        "loadTodos(): Promise<Todo[]>",
+        "Uses AsyncStorage",
+        "Handles empty state gracefully",
+        "Unit tests pass"
+      ],
+      "estimatedIterations": 5
+    },
+    {
+      "id": "todo-hook",
+      "name": "useTodos Hook",
+      "deps": ["types", "storage"],
+      "prompt": "Create useTodos hook for todo state management with CRUD operations.",
+      "acceptance": [
+        "addTodo(title: string)",
+        "toggleTodo(id: string)",
+        "deleteTodo(id: string)",
+        "clearCompleted()",
+        "filter: all/active/completed",
+        "Auto-persists to storage",
+        "Unit tests for all operations"
+      ],
+      "estimatedIterations": 10
+    },
+    {
+      "id": "components",
+      "name": "UI Components",
+      "deps": ["types"],
+      "prompt": "Build reusable UI components: TodoItem, TodoInput, FilterBar.",
+      "acceptance": [
+        "TodoItem: displays todo, tap to toggle, swipe to delete",
+        "TodoInput: text input with add button",
+        "FilterBar: all/active/completed tabs",
+        "Clean, minimal styling",
+        "Components are typed (props interfaces)"
+      ],
+      "estimatedIterations": 10
+    },
+    {
+      "id": "main-screen",
+      "name": "Main Screen",
+      "deps": ["todo-hook", "components"],
+      "prompt": "Assemble main todo screen combining hook and components.",
+      "acceptance": [
+        "Shows todo list",
+        "Can add new todos",
+        "Can toggle completion",
+        "Can delete todos",
+        "Filter works",
+        "Persists across app restart"
+      ],
+      "estimatedIterations": 8
+    },
+    {
+      "id": "integration-tests",
+      "name": "Integration Tests",
+      "deps": ["main-screen"],
+      "prompt": "Write integration tests for full user flows.",
+      "acceptance": [
+        "Test: add todo appears in list",
+        "Test: toggle marks complete",
+        "Test: delete removes from list",
+        "Test: filter shows correct subset",
+        "All tests pass"
+      ],
+      "estimatedIterations": 8
+    }
+  ],
+  "mergeOrder": ["setup", "types", "storage", "todo-hook", "components", "main-screen", "integration-tests"]
+}
