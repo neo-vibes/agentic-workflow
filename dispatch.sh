@@ -186,6 +186,14 @@ run_task() {
     
     # Phase 1: Build
     log "[$task_id] Phase 1: Build"
+    
+    # Check if claude is available
+    if ! command -v claude &> /dev/null; then
+      error "Claude Code CLI not found. Install with: npm install -g @anthropic-ai/claude-code"
+      touch task-logs/BUILD_FAILED
+      exit 1
+    fi
+    
     cat PROMPT-build.md | claude --max-turns $((max_iter * 2)) 2>&1 | tee task-logs/build.log
     
     if grep -q "BUILD_DONE" task-logs/build.log; then

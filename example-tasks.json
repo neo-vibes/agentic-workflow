@@ -27,7 +27,7 @@
         "Filter type: 'all' | 'active' | 'completed'",
         "Exported from src/types/index.ts"
       ],
-      "estimatedIterations": 3
+      "estimatedIterations": 10
     },
     {
       "id": "storage",

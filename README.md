@@ -4,20 +4,32 @@
 
 A complete system for running Claude Code with sub-agent orchestration, Ralph loops, and quality gates.
 
+## Prerequisites
+
+- [Claude Code CLI](https://www.npmjs.com/package/@anthropic-ai/claude-code): `npm install -g @anthropic-ai/claude-code`
+- jq: `sudo apt-get install jq` (Linux) or `brew install jq` (Mac)
+- git, gh CLI
+
 ## Quick Start
 
 ```bash
-# 1. Write your spec
-cp spec-template.md my-project/spec.md
-# Edit spec with requirements
+# 1. Clone harness alongside your project
+git clone https://github.com/neo-vibes/agentic-workflow
+mkdir my-project && cd my-project
+git init
 
-# 2. Generate tasks.json (Claude Code)
-# "Read spec.md and generate tasks.json following tasks-schema.md"
+# 2. Copy templates
+cp ../agentic-workflow/agents-md-template.md ./AGENTS.md
+cp ../agentic-workflow/spec-template.md ./docs/spec.md
+# Edit AGENTS.md and spec.md for your project
 
-# 3. Run orchestration
-./dispatch.sh my-project/tasks.json
+# 3. Generate tasks.json (with Claude Code)
+# "Read docs/spec.md and generate tasks.json following tasks-schema.md"
 
-# 4. Review PRs and merge
+# 4. Run orchestration
+../agentic-workflow/dispatch.sh tasks.json
+
+# 5. Review PRs and merge
 ```
 
 ## Kit Contents
