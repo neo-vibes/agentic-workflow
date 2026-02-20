@@ -21,6 +21,11 @@
 ## Rules
 Read AGENTS.md for coding standards.
 
+**CRITICAL:** All shell commands must be non-interactive.
+- Use `--yes`, `-y`, `--no-input`, `--non-interactive` flags
+- Specify all required arguments (e.g., `--template blank-typescript`)
+- Never rely on interactive prompts — they will hang sub-agents
+
 ## Context (read first)
 - task-logs/notes.md — your notes from previous iterations
 - task-logs/test-output.log — last test results  

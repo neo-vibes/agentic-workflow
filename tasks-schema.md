@@ -131,4 +131,43 @@ Output valid JSON matching the schema.
 
 ---
 
-*Schema version: 1.0 — 2026-02-19*
+## Prompt Best Practices
+
+### Non-Interactive Commands
+**CRITICAL:** All shell commands in prompts must be fully non-interactive.
+
+```
+❌ npx create-expo-app --template
+✅ npx create-expo-app . --template blank-typescript --yes
+
+❌ npm init
+✅ npm init -y
+
+❌ git push
+✅ git push --set-upstream origin feat/task-id
+```
+
+Sub-agents hang on interactive prompts. Always specify:
+- `--yes`, `-y`, `--non-interactive` flags
+- All required arguments explicitly
+- Default values where needed
+
+### Clear Acceptance Criteria
+```
+❌ "Tests should work"
+✅ "All tests pass, pnpm test exits 0, coverage > 80%"
+
+❌ "Code should be clean"
+✅ "pnpm lint passes, pnpm build passes, no console.logs left"
+```
+
+### Right-Sized Tasks
+- Simple tasks: 5-10 iterations (types, config, utils)
+- Medium tasks: 10-20 iterations (API endpoints, services)
+- Complex tasks: 20-30 iterations (integration flows, complex logic)
+
+If estimating > 30 iterations, split the task.
+
+---
+
+*Schema version: 1.1 — 2026-02-20*
