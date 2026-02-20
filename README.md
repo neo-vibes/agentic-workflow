@@ -1,102 +1,72 @@
-# Agentic Workflow — Harness Engineering Kit
+# Agentic Engineering Workflow
 
 > "Humans steer. Agents execute."
 
-A complete system for running Claude Code with sub-agent orchestration, Ralph loops, and quality gates.
+A structured workflow for Claude Code to build software through orchestrated sub-agents and iterative Ralph loops.
 
-## Prerequisites
+## How It Works
 
-- [Claude Code CLI](https://www.npmjs.com/package/@anthropic-ai/claude-code): `npm install -g @anthropic-ai/claude-code`
-- jq: `sudo apt-get install jq` (Linux) or `brew install jq` (Mac)
-- git, gh CLI
+See **[WORKFLOW.md](./WORKFLOW.md)** for full architecture.
+
+**Quick summary:**
+1. **Orchestrator** (Claude Code) reads project spec
+2. Generates `tasks.json` — task breakdown with complexity, deps, iterations
+3. For each task: runs **Ralph Loop** (N iterations via sub-agents)
+4. Sub-agents return structured status/logs
+5. Final **Code Quality Loop** cleans everything
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| `WORKFLOW.md` | Architecture overview |
+| `spec-template.md` | How to write project specs |
+| `tasks-schema.md` | tasks.json format |
+| `principles.md` | Coding rules for sub-agents |
+| `ralph-prompt-template.md` | Ralph loop prompt template |
+| `agents-md-template.md` | AGENTS.md template for projects |
 
 ## Quick Start
 
 ```bash
-# 1. Clone harness alongside your project
-git clone https://github.com/neo-vibes/agentic-workflow
+# 1. Create project with spec
 mkdir my-project && cd my-project
 git init
+cp ~/agentic-engineering-workflow/spec-template.md ./SPEC.md
+# Edit SPEC.md for your project
 
-# 2. Copy templates
-cp ../agentic-workflow/agents-md-template.md ./AGENTS.md
-cp ../agentic-workflow/spec-template.md ./docs/spec.md
-# Edit AGENTS.md and spec.md for your project
+# 2. Start Claude Code
+claude
 
-# 3. Generate tasks.json (with Claude Code)
-# "Read docs/spec.md and generate tasks.json following tasks-schema.md"
-
-# 4. Run orchestration
-../agentic-workflow/dispatch.sh tasks.json
-
-# 5. Review PRs and merge
+# 3. Tell Claude Code to orchestrate
+# "Read SPEC.md and ~/agentic-engineering-workflow/WORKFLOW.md. 
+#  Generate tasks.json and execute the workflow."
 ```
 
-## Kit Contents
-
-| File | Purpose |
-|------|---------|
-| `spec-template.md` | How to write project specs |
-| `principles.md` | Coding rules for Claude Code |
-| `agents-md-template.md` | AGENTS.md structure for repos |
-| `ralph-prompt-template.md` | Build/Polish prompt templates |
-| `tasks-schema.md` | tasks.json format for orchestration |
-| `dispatch.sh` | Orchestration script |
-| `example-tasks.json` | Example tasks.json (todo app) |
-| `todo-app-spec.md` | Test spec for validation |
-| `odyssey-spec.md` | Production spec (Odyssey) |
-
-## Workflow
-
-```
-Spec → Claude Code plans → tasks.json → dispatch.sh
-                                            │
-                    ┌───────────────────────┼───────────────────────┐
-                    ▼                       ▼                       ▼
-              Sub-agent A            Sub-agent B            Sub-agent C
-              (worktree)             (worktree)             (worktree)
-                    │                       │                       │
-              Ralph: Build            Ralph: Build            Ralph: Build
-              Ralph: Polish           Ralph: Polish           Ralph: Polish
-                    │                       │                       │
-                   PR ──────────────────────┴───────────────────── PR
-                                            │
-                                      Merge in order
-```
+Claude Code will:
+- Generate tasks.json from your spec
+- Spawn sub-agents for each task
+- Run Ralph loops with iteration memory
+- Finish with code quality pass
 
 ## Key Concepts
 
-### Ralph Loops
-External iteration loop that feeds the same prompt until completion:
-```bash
-while :; do cat PROMPT.md | claude ; done
-```
-Fresh context each run. Agent reads its own notes from previous iterations.
+### Ralph Loop
+Iterative execution for each task:
+- Sub-agent spawns with clean context
+- Returns status + iteration notes
+- Next iteration receives previous notes
+- Orchestrator decides: continue / done / blocked
 
-### Two Phases
-1. **Build** — Make it work (tests pass)
-2. **Polish** — Make it clean (lint, types, naming)
+### Two Memory Levels
+- **Iteration memory** — notes within a Ralph loop
+- **Cross-loop memory** — last iteration carries into new loop if retry needed
 
-### Task Dependencies
-Tasks declare dependencies. dispatch.sh respects them:
-- Independent tasks run in parallel
-- Dependent tasks wait for deps to complete
-
-### Logging
-- `INFO` — App behavior (production)
-- `DEBUG` — Agent debugging (dev only, read by agent)
-
-## Testing
-
-Validate the workflow on the todo app before production use:
-```bash
-# Dry run (no actual execution)
-./dispatch.sh example-tasks.json --dry-run
-
-# Real run
-./dispatch.sh example-tasks.json
-```
+### Task Complexity → Iterations
+- `low` — 1-2 iterations
+- `medium` — 2-3 iterations
+- `high` — 3-5 iterations
 
 ---
 
-*Version: 1.0 — 2026-02-19*
+*Agentic Engineering Workflow v2.0 — 2026-02-20*
